@@ -1,13 +1,18 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import path from 'node:path';
 import started from 'electron-squirrel-startup';
+import fs from "fs-extra";
+import fPath from "path";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
+
 const createWindow = () => {
+  const NOTES_DIR = path.join(app.getPath("home"), "my-notes");
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,
@@ -26,6 +31,29 @@ const createWindow = () => {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
+
+  
+  ipcMain.handle("get-notes", async () => {
+    const files = await fs.readdir(NOTES_DIR);
+    return files.map((f) => f.replace(".json", ""));
+  });
+
+  ipcMain.handle("load-note", async (_, filename) => {
+    const filePath = fPath.join(NOTES_DIR, `${filename}.json`);
+    return await fs.readJson(filePath);
+  });
+
+  ipcMain.handle("save-note", async (_, { title, content }) => {
+    const filePath = fPath.join(NOTES_DIR, `${title}.json`);
+    console.log(filePath);
+    await fs.writeJson(filePath, content, { spaces: 2 });
+  });
+
+  ipcMain.handle("delete-note", async (_, filename) => {
+    console.log("Deleting note:", filename);
+    const filePath = fPath.join(NOTES_DIR, `${filename}.json`);
+    await fs.remove(filePath);
+  });
 };
 
 // This method will be called when Electron has finished
