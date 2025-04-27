@@ -35,6 +35,7 @@ import EditorJS from "@editorjs/editorjs";
 import Checklist from "@editorjs/checklist";
 import ImageTool from "@editorjs/image";
 import EditorjsList from '@editorjs/list';
+import editorjsCodecup from '@calumk/editorjs-codecup';
 
 const editor = ref(null);
 const currentNote = ref(null);
@@ -48,6 +49,7 @@ const initEditor = (data = null) => {
         holder: "editorjs",
         data: data,
         tools: {
+            code : editorjsCodecup,
             list: {
                 class: EditorjsList,
                 inlineToolbar: true,
