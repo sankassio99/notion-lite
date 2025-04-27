@@ -34,6 +34,7 @@ import { ref, onMounted } from "vue";
 import EditorJS from "@editorjs/editorjs";
 import Checklist from "@editorjs/checklist";
 import ImageTool from "@editorjs/image";
+import EditorjsList from '@editorjs/list';
 
 const editor = ref(null);
 const currentNote = ref(null);
@@ -47,6 +48,13 @@ const initEditor = (data = null) => {
         holder: "editorjs",
         data: data,
         tools: {
+            list: {
+                class: EditorjsList,
+                inlineToolbar: true,
+                config: {
+                    defaultStyle: 'unordered'
+                },
+            },
             checklist: {
                 class: Checklist,
                 inlineToolbar: true,
