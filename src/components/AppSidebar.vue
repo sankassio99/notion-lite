@@ -45,7 +45,7 @@ const items = [
   <Sidebar>
     <SidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
+        <SidebarGroupLabel>Notes</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
               <SidebarMenuItem v-for="item in items" :key="item.title">
