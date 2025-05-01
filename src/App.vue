@@ -1,5 +1,5 @@
 <template>
-    <div class="flex">
+    <!-- <div class="flex">
         <div id="sidebar" class="w-[250px] bg-gray-100 p-4 border-r border-gray-300 h-screen">
             <button @click="createNewNote" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
                 + Nova Nota
@@ -26,7 +26,14 @@
                 placeholder="Título da nota" />
             <div id="editorjs" class="ml-2 rounded p-4"></div>
         </div>
-    </div>
+    </div> -->
+    <SidebarProvider>
+        <AppSidebar />
+        <main>
+            <SidebarTrigger />
+            <slot></slot>
+        </main>
+    </SidebarProvider>
 </template>
 
 <script setup>
@@ -36,6 +43,8 @@ import Checklist from "@editorjs/checklist";
 import ImageTool from "@editorjs/image";
 import EditorjsList from '@editorjs/list';
 import editorjsCodecup from '@calumk/editorjs-codecup';
+import { SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
+import AppSidebar from "../components/AppSidebar.vue";
 
 const editor = ref(null);
 const currentNote = ref(null);

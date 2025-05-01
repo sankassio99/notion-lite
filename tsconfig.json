@@ -20,9 +20,10 @@
             "@components/*": ["src/components/*"],
             "@src/*": ["src/*"],
             "@test/*": ["test/*"],
-            "@services/*": ["src/services/*"]
+            "@services/*": ["src/services/*"],
+            "@/*": ["./*"]
         },
-        "baseUrl": "./"
+        "baseUrl": ".",
     },
     "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue", "test/**/*.ts"]
 }
