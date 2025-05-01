@@ -44,7 +44,7 @@ import ImageTool from "@editorjs/image";
 import EditorjsList from '@editorjs/list';
 import editorjsCodecup from '@calumk/editorjs-codecup';
 import { SidebarProvider, SidebarTrigger } from '../components/ui/sidebar'
-import AppSidebar from "../components/AppSidebar.vue";
+import AppSidebar from "./components/AppSidebar.vue";
 
 const editor = ref(null);
 const currentNote = ref(null);
