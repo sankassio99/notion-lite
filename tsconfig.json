@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "outDir": "./dist",
+        "noImplicitAny": true,
+        "module": "ESNext",
+        "lib": ["DOM", "ES2023"],
+        "allowJs": true,
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true,
+        "resolveJsonModule": true,
+        "forceConsistentCasingInFileNames": true,
+        "plugins": [
+            {
+                "name": "vue-tsc",
+                "experimental": true
+            }
+        ],
+        "types": ["vue", "node"],
+        "paths": {
+            "@components/*": ["src/components/*"],
+            "@src/*": ["src/*"],
+            "@test/*": ["test/*"],
+            "@services/*": ["src/services/*"]
+        },
+        "baseUrl": "./"
+    },
+    "include": ["src/**/*.js", "src/**/*.ts", "src/**/*.vue", "test/**/*.ts"]
+}
