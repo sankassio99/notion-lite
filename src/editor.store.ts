@@ -5,17 +5,30 @@ import editorjsCodecup from "@calumk/editorjs-codecup";
 import EditorJS, { OutputData } from "@editorjs/editorjs";
 import { Ref, ref } from "vue";
 
+export class Note {
+    uid: string;
+    title: string;
+    content: any;
+
+    constructor(uid: string, title: string, content: any) {
+        this.uid = uid;
+        this.title = title;
+        this.content = content;
+    }
+}
+
+const notes = ref<Note[]>([]);
+
 const editor: Ref<EditorJS | null> = ref(null);
 
-const currentNote: Ref<string | null> = ref(null);
-const noteTitle: Ref<string | null> = ref(null);
+const currentNote: Ref<Note | null> = ref(null);
 
-const initEditor = (data?: OutputData): void => {
+const initEditor = (): void => {
     if (editor.value) editor.value.destroy();
 
-    editor.value = new EditorJS({
+    editor.value = new EditorJS({   
         holder: "editorjs",
-        data,
+        data: currentNote.value?.content,
         tools: {
             code: editorjsCodecup,
             list: {
@@ -52,4 +65,4 @@ const initEditor = (data?: OutputData): void => {
     });
 };
 
-export { initEditor, editor, currentNote, noteTitle };
+export { initEditor, editor, currentNote, notes };

@@ -40,7 +40,21 @@ const createWindow = () => {
   
   ipcMain.handle("get-notes", async () => {
     const files = await fs.readdir(NOTES_DIR);
-    return files.map((f) => f.replace(".json", ""));
+    const notes = await Promise.all(
+      files
+        .filter(f => f.endsWith('.json'))
+        .map(async (filename) => {
+          const filePath = fPath.join(NOTES_DIR, filename);
+          try {
+            const note = await fs.readJson(filePath);
+            return note;
+          } catch (error) {
+            console.error(`Error reading note ${filename}:`, error);
+            return null;
+          }
+        })
+    );
+    return notes.filter(note => note !== null);
   });
 
   ipcMain.handle("load-note", async (_, filename) => {
@@ -48,10 +62,10 @@ const createWindow = () => {
     return await fs.readJson(filePath);
   });
 
-  ipcMain.handle("save-note", async (_, { title, content }) => {
-    const filePath = fPath.join(NOTES_DIR, `${title}.json`);
+  ipcMain.handle("save-note", async (_, note) => {
+    const filePath = fPath.join(NOTES_DIR, `${note.uid}.json`);
     console.log(filePath);
-    await fs.writeJson(filePath, content, { spaces: 2 });
+    await fs.writeJson(filePath, note, { spaces: 2 });
   });
 
   ipcMain.handle("delete-note", async (_, filename) => {

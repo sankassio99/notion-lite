@@ -4,34 +4,31 @@
             + Nova Nota
         </button>
         <ul class="mt-4 space-y-2">
-            <li v-for="note in notes" :key="note" @click="loadNote(note)"
+            <li v-for="note in notes" :key="note.uid" @click="loadNote(note.uid)"
                 class="cursor-pointer hover:bg-gray-200 p-2 rounded line-clamp-2">
-                {{ note }}
+                {{ note.title }}
             </li>
         </ul>
     </div>
 </template>
 
-<script setup>
-import { currentNote, initEditor, noteTitle } from '@/editor.store';
-import { onMounted, ref } from 'vue';
-
-const notes = ref([]);
+<script setup lang="ts">
+import { currentNote, initEditor, Note, notes } from '@/editor.store';
+import { onMounted } from 'vue';
 
 onMounted(async () => {
-    notes.value = await window.electronAPI.getNotes();
+    const data = await (window as any).electronAPI.getNotes();
+    notes.value = data.map((note: any) => new Note(note.uid, note.title, note.content));
 });
 
-const loadNote = async (name) => {
-    currentNote.value = name;
-    const data = await window.electronAPI.loadNote(name);
-    noteTitle.value = name;
-    initEditor(data);
+const loadNote = async (uid: string) => {
+    const data = await (window as any).electronAPI.loadNote(uid);
+    currentNote.value = new Note(uid, data.title, data.content);
+    initEditor();
 };
 
 const createNewNote = () => {
-    currentNote.value = null;
-    noteTitle.value = "Nova Nota";
+    currentNote.value = new Note(crypto.randomUUID(), "Nova Nota", {});
     initEditor();
 };
 </script>

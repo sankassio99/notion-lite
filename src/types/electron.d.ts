@@ -1,15 +1,10 @@
+import { Note } from '../editor.store';
+
 interface ElectronAPI {
-    getNotes: () => Promise<Array<{
-        uid: string;
-        title: string;
-        content: any;
-    }>>;
-    saveNote: (note: {
-        uid: string;
-        title: string;
-        content: any;
-    }) => Promise<void>;
-    deleteNote: (title: string) => Promise<void>;
+    getNotes: () => Promise<Note[]>;
+    loadNote: (filename: string) => Promise<Note>;
+    saveNote: (note: Note) => Promise<void>;
+    deleteNote: (uid: string) => Promise<void>;
 }
 
 declare global {
