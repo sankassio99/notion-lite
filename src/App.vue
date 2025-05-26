@@ -19,93 +19,39 @@
     </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
-import EditorJS from "@editorjs/editorjs";
-import Checklist from "@editorjs/checklist";
-import ImageTool from "@editorjs/image";
-import EditorjsList from '@editorjs/list';
-import editorjsCodecup from '@calumk/editorjs-codecup';
 import Sidebar from './components/Sidebar.vue';
+import { editor, initEditor } from './editor.store';
 
-const editor = ref(null);
-const currentNote = ref(null);
-const notes = ref([]);
+interface Note {
+    uid: string;
+    title: string;
+    content: any;
+}
+
+const currentNote = ref<string | null>(null);
+const notes = ref<Note[]>([]);
 const noteTitle = ref("");
 
-const initEditor = (data = null) => {
-    if (editor.value) editor.value.destroy();
-
-    editor.value = new EditorJS({
-        holder: "editorjs",
-        data: data,
-        tools: {
-            code : editorjsCodecup,
-            list: {
-                class: EditorjsList,
-                inlineToolbar: true,
-                config: {
-                    defaultStyle: 'unordered'
-                },
-            },
-            checklist: {
-                class: Checklist,
-                inlineToolbar: true,
-            },
-            image: {
-                class: ImageTool,
-                config: {
-                    uploader: {
-                        async uploadByFile(file) {
-                            const reader = new FileReader();
-                            reader.readAsDataURL(file);
-                            return new Promise((resolve) => {
-                                reader.onload = () => {
-                                    resolve({
-                                        success: 1,
-                                        file: { url: reader.result },
-                                    });
-                                };
-                            });
-                        },
-                    },
-                },
-            },
-        },
-    });
+const loadNotes = async (): Promise<void> => {
+    notes.value = await (window as any).electronAPI.getNotes();
 };
 
-const loadNotes = async () => {
-    notes.value = await window.electronAPI.getNotes();
-};
-
-const createNewNote = () => {
-    noteTitle.value = "";
-    currentNote.value = null;
-    initEditor();
-};
-
-const loadNote = async (name) => {
-    currentNote.value = name;
-    const data = await window.electronAPI.loadNote(name);
-    noteTitle.value = name;
-    initEditor(data);
-};
-
-const saveNote = async () => {
+const saveNote = async (): Promise<void> => {
     const title = noteTitle.value.trim();
     if (!title) return alert("Insira um título");
 
-    const content = await editor.value.save();
+    const content = await editor.value?.save();
     const uid = crypto.randomUUID();
-    await window.electronAPI.saveNote({ uid, title, content });
+    await (window as any).electronAPI.saveNote({ uid, title, content });
     currentNote.value = title;
     loadNotes();
 };
 
-const deleteCurrentNote = async () => {
+const deleteCurrentNote = async (): Promise<void> => {
     if (!currentNote.value) return alert("Selecione uma nota para excluir");
-    await window.electronAPI.deleteNote(currentNote.value);
+    await (window as any).electronAPI.deleteNote(currentNote.value);
     currentNote.value = null;
     noteTitle.value = "";
     initEditor();
