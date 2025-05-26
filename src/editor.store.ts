@@ -7,6 +7,9 @@ import { Ref, ref } from "vue";
 
 const editor: Ref<EditorJS | null> = ref(null);
 
+const currentNote: Ref<string | null> = ref(null);
+const noteTitle: Ref<string | null> = ref(null);
+
 const initEditor = (data?: OutputData): void => {
     if (editor.value) editor.value.destroy();
 
@@ -49,4 +52,4 @@ const initEditor = (data?: OutputData): void => {
     });
 };
 
-export { initEditor, editor };
+export { initEditor, editor, currentNote, noteTitle };

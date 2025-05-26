@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import Sidebar from './components/Sidebar.vue';
-import { editor, initEditor } from './editor.store';
+import { currentNote, editor, initEditor, noteTitle } from './editor.store';
 
 interface Note {
     uid: string;
@@ -30,16 +30,14 @@ interface Note {
     content: any;
 }
 
-const currentNote = ref<string | null>(null);
 const notes = ref<Note[]>([]);
-const noteTitle = ref("");
 
 const loadNotes = async (): Promise<void> => {
     notes.value = await (window as any).electronAPI.getNotes();
 };
 
 const saveNote = async (): Promise<void> => {
-    const title = noteTitle.value.trim();
+    const title = noteTitle?.value?.trim();
     if (!title) return alert("Insira um título");
 
     const content = await editor.value?.save();

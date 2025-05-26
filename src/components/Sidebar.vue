@@ -13,19 +13,25 @@
 </template>
 
 <script setup>
+import { currentNote, initEditor, noteTitle } from '@/editor.store';
 import { onMounted, ref } from 'vue';
 
 const notes = ref([]);
 
-const createNewNote = () => {
-    notes.value.push('Nova Nota');
-};
-
-onMounted(() => {
-    loadNote();
+onMounted(async () => {
+    notes.value = await window.electronAPI.getNotes();
 });
 
-const loadNote = async (note) => {
-    notes.value = await window.electronAPI.getNotes();
+const loadNote = async (name) => {
+    currentNote.value = name;
+    const data = await window.electronAPI.loadNote(name);
+    noteTitle.value = name;
+    initEditor(data);
+};
+
+const createNewNote = () => {
+    currentNote.value = null;
+    noteTitle.value = "Nova Nota";
+    initEditor();
 };
 </script>
