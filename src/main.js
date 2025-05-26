@@ -13,6 +13,11 @@ if (started) {
 const createWindow = () => {
   const NOTES_DIR = path.join(app.getPath("home"), "my-notes");
 
+  // create the notes directory if it doesn't exist
+  if (!fs.existsSync(NOTES_DIR)) {
+    fs.mkdirSync(NOTES_DIR);
+  }
+
   // Create the browser window.
   const mainWindow = new BrowserWindow({
     width: 800,

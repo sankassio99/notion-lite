@@ -1,16 +1,6 @@
 <template>
     <div class="flex">
-        <div id="sidebar" class="w-[250px] bg-gray-100 p-4 border-r border-gray-300 h-screen">
-            <button @click="createNewNote" class="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600">
-                + Nova Nota
-            </button>
-            <ul class="mt-4 space-y-2">
-                <li v-for="note in notes" :key="note" @click="loadNote(note)"
-                    class="cursor-pointer hover:bg-gray-200 p-2 rounded line-clamp-2">
-                    {{ note }}
-                </li>
-            </ul>
-        </div>
+        <Sidebar />
         <div id="editor" class="w-3/4 py-6 px-8">
             <div class="controls h-3 p-1 flex items-end justify-end space-x-2">
                 <button @click="deleteCurrentNote">
@@ -36,6 +26,7 @@ import Checklist from "@editorjs/checklist";
 import ImageTool from "@editorjs/image";
 import EditorjsList from '@editorjs/list';
 import editorjsCodecup from '@calumk/editorjs-codecup';
+import Sidebar from './components/Sidebar.vue';
 
 const editor = ref(null);
 const currentNote = ref(null);
