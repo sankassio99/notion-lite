@@ -1,27 +1,18 @@
-<template>
+c<template>
     <div class="flex">
         <Sidebar />
-        <div id="editor" class="w-3/4 py-6 px-8">
-            <div class="controls h-3 p-1 flex items-end justify-end space-x-2">
-                <button @click="deleteCurrentNote">
-                    <span class="text-gray-500 hover:text-red-500">Excluir</span>
-                </button>
-                <button @click="saveNote">
-                    <span class="text-gray-500 hover:text-blue-500">Salvar</span>
-                </button>
-            </div>
-
-            <input :value="currentNote?.title"
-                class="w-full text-2xl font-bold border-b border-gray-300 focus:outline-none focus:border-blue-500 mb-4"
-                placeholder="Título da nota" />
-            <div id="editorjs" class="ml-2 rounded p-4"></div>
-        </div>
+        <Editor 
+            v-model:note="currentNote"
+            @save="saveNote"
+            @delete="deleteCurrentNote"
+        />
     </div>
 </template>
 
 <script setup lang="ts">
 import { onMounted } from "vue";
 import Sidebar from './components/Sidebar.vue';
+import Editor from './components/Editor.vue';
 import { currentNote, editor, initEditor, Note, notes } from './editor.store';
 
 const loadNotes = async (): Promise<void> => {
@@ -29,23 +20,21 @@ const loadNotes = async (): Promise<void> => {
 };
 
 const saveNote = async (): Promise<void> => {
-    const title = currentNote.value?.title?.trim();
-    if (!title) return alert("Insira um título");
+    if (!currentNote.value) return alert("Nenhuma nota selecionada");
 
     const content = await editor.value?.save();
+    
+    if (currentNote.value.content !== content) {
+        currentNote.value.content = content;
+    }
 
-    const note = new Note(crypto.randomUUID(), title, content);
-
-    await (window as any).electronAPI.saveNote(note);
-
-    currentNote.value = note;
-
+    await (window as any).electronAPI.saveNote(currentNote.value);
     loadNotes();
 };
 
 const deleteCurrentNote = async (): Promise<void> => {
     if (!currentNote.value) return alert("Selecione uma nota para excluir");
-    await (window as any).electronAPI.deleteNote(currentNote.value?.uid);
+    await (window as any).electronAPI.deleteNote(currentNote.value.uid);
     currentNote.value = null;
     initEditor();
     loadNotes();
